@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>石破 vs ストリックランド</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Noto+Sans+JP:wght@400;700;900&display=swap');
+
+  :root {
+    --ishiba: #2c4a7c;
+    --ishiba-light: #4a7cc7;
+    --strick: #c0392b;
+    --strick-light: #e74c3c;
+    --bg: #0a0a0a;
+    --ring: #1a1a1a;
+    --gold: #f0c040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: #fff;
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .arena {
+    background: 
+      radial-gradient(ellipse at 25% 50%, rgba(44,74,124,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 75% 50%, rgba(192,57,43,0.15) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px);
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  header {
+    text-align: center;
+    padding: 20px 0 10px;
+  }
+
+  .title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .title .vs-text {
+    color: var(--gold);
+    font-size: 0.7em;
+    display: inline-block;
+    margin: 0 10px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+  }
+
+  .title .ishiba-name { color: var(--ishiba-light); }
+  .title .strick-name { color: var(--strick-light); }
+
+  .subtitle {
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 5px;
+    letter-spacing: 0.15em;
+  }
+
+  /* INPUT AREA */
+  .question-zone {
+    max-width: 700px;
+    margin: 20px auto;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .question-zone label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  textarea {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    resize: none;
+    height: 60px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { border-color: var(--gold); }
+  textarea::placeholder { color: #555; }
+
+  .fight-btn {
+    background: linear-gradient(135deg, var(--gold), #e0a020);
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    cursor: pointer;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 0 20px;
+    text-transform: uppercase;
+    transition: transform 0.1s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+
+  .fight-btn:hover { transform: scale(1.03); box-shadow: 0 4px 20px rgba(240,192,64,0.4); }
+  .fight-btn:active { transform: scale(0.97); }
+  .fight-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* QUICK TOPICS */
+  .quick-topics {
+    max-width: 700px;
+    margin: 8px auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .topic-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    transition: all 0.2s;
+  }
+
+  .topic-btn:hover {
+    background: rgba(240,192,64,0.15);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* RING / FIGHTERS */
+  .ring {
+    max-width: 900px;
+    margin: 16px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .fighter-card {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .fighter-card.ishiba {
+    background: linear-gradient(160deg, rgba(44,74,124,0.3) 0%, rgba(10,10,10,0.95) 60%);
+    border: 1px solid rgba(74,124,199,0.3);
+  }
+
+  .fighter-card.strick {
+    background: linear-gradient(160deg, rgba(192,57,43,0.3) 0%, rgba(10,10,10,0.95) 60%);
+    border: 1px solid rgba(231,76,60,0.3);
+  }
+
+  .fighter-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .fighter-emoji {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .fighter-info { flex: 1; }
+
+  .fighter-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .ishiba .fighter-name { color: var(--ishiba-light); }
+  .strick .fighter-name { color: var(--strick-light); }
+
+  .fighter-style {
+    font-size: 0.65rem;
+    color: #666;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .response-area {
+    padding: 14px;
+    min-height: 160px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #ccc;
+    position: relative;
+  }
+
+  .placeholder-text {
+    color: #444;
+    font-style: italic;
+    font-size: 0.8rem;
+  }
+
+  .thinking {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 0.8rem;
+  }
+
+  .thinking.active { display: flex; }
+
+  .dot-pulse {
+    display: flex;
+    gap: 4px;
+  }
+
+  .dot-pulse span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: dotBounce 1.2s ease-in-out infinite;
+  }
+
+  .ishiba .dot-pulse span { background: var(--ishiba-light); }
+  .strick .dot-pulse span { background: var(--strick-light); }
+
+  .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+  .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  .response-text {
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* VERDICT */
+  .verdict-zone {
+    max-width: 700px;
+    margin: 10px auto 30px;
+    background: rgba(240,192,64,0.06);
+    border: 1px solid rgba(240,192,64,0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: none;
+  }
+
+  .verdict-zone.visible { display: block; animation: fadeIn 0.5s ease; }
+
+  .verdict-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .verdict-text {
+    color: #ddd;
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  /* ERROR */
+  .error-msg {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 8px;
+    display: none;
+  }
+
+  @media (max-width: 600px) {
+    .ring { grid-template-columns: 1fr; }
+    .title { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+<div class="arena">
+
+  <header>
+    <div class="title">
+      <span class="ishiba-name">石破</span>
+      <span class="vs-text">VS</span>
+      <span class="strick-name">ストリックランド</span>
+    </div>
+    <div class="subtitle">── 同じ質問、まったく違う答え ──</div>
+  </header>
+
+  <div class="question-zone">
+    <label>⚡ 質問を入力してください</label>
+    <div class="input-row">
+      <textarea id="questionInput" placeholder="例：消費税を上げますか？　LGBT法案どう思う？　AIは危険ですか？"></textarea>
+      <button class="fight-btn" id="fightBtn" onclick="startFight()">FIGHT！</button>
+    </div>
+    <div class="error-msg" id="errorMsg">エラーが発生しました。もう一度お試しください。</div>
+  </div>
+
+  <div class="quick-topics">
+    <button class="topic-btn" onclick="setTopic('消費税を上げますか？')">消費税</button>
+    <button class="topic-btn" onclick="setTopic('LGBT法案についてどう思いますか？')">LGBT</button>
+    <button class="topic-btn" onclick="setTopic('AIは人類にとって危険ですか？')">AI危険性</button>
+    <button class="topic-btn" onclick="setTopic('移民を受け入れるべきですか？')">移民問題</button>
+    <button class="topic-btn" onclick="setTopic('戦争は正当化できますか？')">戦争</button>
+    <button class="topic-btn" onclick="setTopic('弱い者いじめをどう思いますか？')">いじめ</button>
+    <button class="topic-btn" onclick="setTopic('男と女は平等ですか？')">男女平等</button>
+    <button class="topic-btn" onclick="setTopic('死刑制度は必要ですか？')">死刑制度</button>
+  </div>
+
+  <div class="ring">
+
+    <div class="fighter-card ishiba" id="ishibaCard">
+      <div class="fighter-header">
+        <div class="fighter-emoji">🇯🇵</div>
+        <div class="fighter-info">
+          <div class="fighter-name">石破　茂</div>
+          <div class="fighter-style">軸なし・謝罪の形だけ・着地点不明スタイル</div>
+        </div>
+      </div>
+      <div class="response-area" id="ishibaResponse">
+        <div class="thinking" id="ishibaThinking">
+          <div class="dot-pulse">
+            <span></span><span></span><span></span>
+          </div>
+          <span>丁寧に検討中...</span>
+        </div>
+        <div class="placeholder-text" id="ishibaPlaceholder">「国民の皆様のご意見を真摯に...」</div>
+      </div>
+    </div>
+
+    <div class="fighter-card strick" id="strickCard">
+      <div class="fighter-header">
+        <div class="fighter-emoji">🥊</div>
+        <div class="fighter-info">
+          <div class="fighter-name">ストリックランド</div>
+          <div class="fighter-style">フィルターゼロ・ちんこついてんだろスタイル</div>
+        </div>
+      </div>
+      <div class="response-area" id="strickResponse">
+        <div class="thinking" id="strickThinking">
+          <div class="dot-pulse">
+            <span></span><span></span><span></span>
+          </div>
+          <span>考え中（0.3秒で終わる）...</span>
+        </div>
+        <div class="placeholder-text" id="strickPlaceholder">「そんなもん簡単だろ、答えは...」</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict-zone" id="verdictZone">
+    <div class="verdict-label">🏆 タチコマの採点</div>
+    <div class="verdict-text" id="verdictText"></div>
+  </div>
+
+</div>
+
+<script>
+function setTopic(text) {
+  document.getElementById('questionInput').value = text;
+}
+
+async function callClaude(systemPrompt, userMessage) {
+  const fetchPromise = fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 300,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userMessage }]
+    })
+  }).then(r => r.json()).then(d => d.content[0].text);
+
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("タイムアウト")), 60000)
+  );
+
+  return Promise.race([fetchPromise, timeoutPromise]);
+}
+
+async function startFight() {
+  const question = document.getElementById('questionInput').value.trim();
+  if (!question) return;
+
+  const btn = document.getElementById('fightBtn');
+  btn.disabled = true;
+
+  document.getElementById('errorMsg').style.display = 'none';
+  document.getElementById('verdictZone').classList.remove('visible');
+
+  // 石破側リセット
+  document.getElementById('ishibaPlaceholder').style.display = 'none';
+  const ishibaResponseEl = document.getElementById('ishibaResponse');
+  const oldIshibaText = ishibaResponseEl.querySelector('.response-text');
+  if (oldIshibaText) oldIshibaText.remove();
+  document.getElementById('ishibaThinking').classList.add('active');
+
+  // ストリックランド側リセット
+  document.getElementById('strickPlaceholder').style.display = 'none';
+  const strickResponseEl = document.getElementById('strickResponse');
+  const oldStrickText = strickResponseEl.querySelector('.response-text');
+  if (oldStrickText) oldStrickText.remove();
+  document.getElementById('strickThinking').classList.add('active');
+
+  const ishibaPrompt = `あなたは日本の政治家・石破茂です。以下のキャラクター設定で日本語で回答してください：
+
+【石破茂スタイルの特徴】
+- 「国民の皆様のご意見を真摯に受け止め」「丁寧に議論を重ねてまいりたい」など、聞こえの良い言葉を多用する
+- どんな質問にも明確なYES/NOを言わない。常に「あらゆる可能性を排除せず」「関係各所と協議の上」で締める
+- 謝罪や共感の言葉だけ言って、実際の立場は曖昧にしたまま着地する
+- 防衛の話だけはやや熱くなるが、それ以外は全部ふわっと終わらせる
+- 3〜5文で、石破風の完璧にコミットしない政治家答弁を返す
+- 絶対に明確な立場表明はしない
+
+質問に対して石破茂として答えてください。`;
+
+  const stricklandPrompt = `あなたはUFCファイター・ショーン・ストリックランドです。以下のキャラクター設定で日本語で回答してください：
+
+【ストリックランドスタイルの特徴】
+- フィルターが一切ない。思ったことをそのまま言う
+- 複雑な問題もシンプルに「要するにこうだろ」で切り捨てる
+- 「ちんこついてんだろ」「そんな簡単な話だろ」みたいな荒っぽい表現を使う（日本語で自然に）
+- 政治的正しさや配慮は一切ない
+- 自分の意見をはっきり言い、ぶれない
+- 2〜4文で、ストリックランド風の直球すぎる答えを返す
+- 絶対に「丁寧に」とか「慎重に」とは言わない
+
+質問に対してストリックランドとして答えてください。`;
+
+  const verdictPrompt = `あなたはタチコマ（攻殻機動隊のAI）です。石破茂とストリックランドの2つの回答を見て、短いコメントをしてください。
+
+【タチコマのスタイル】
+- お茶目でユーモアがある
+- でも核心をついた分析をする
+- 「軸がある/ない」「ロジックが通ってる/いない」で評価する
+- 3文以内で、どっちが「マシ」か採点する（完全中立は禁止）
+- 日本語で、ちょっと関西弁混じりでもOK`;
+
+  try {
+    const [ishibaResult, strickResult] = await Promise.all([
+      callClaude(ishibaPrompt, question),
+      callClaude(stricklandPrompt, question)
+    ]);
+
+    document.getElementById('ishibaThinking').classList.remove('active');
+    const ishibaText = document.createElement('div');
+    ishibaText.className = 'response-text';
+    ishibaText.textContent = ishibaResult;
+    ishibaResponseEl.appendChild(ishibaText);
+
+    document.getElementById('strickThinking').classList.remove('active');
+    const strickText = document.createElement('div');
+    strickText.className = 'response-text';
+    strickText.textContent = strickResult;
+    strickResponseEl.appendChild(strickText);
+
+    const verdictQuestion = `質問：「${question}」\n\n石破の回答：「${ishibaResult}」\n\nストリックランドの回答：「${strickResult}」`;
+    const verdictResult = await callClaude(verdictPrompt, verdictQuestion);
+
+    document.getElementById('verdictText').textContent = verdictResult;
+    document.getElementById('verdictZone').classList.add('visible');
+
+  } catch (e) {
+    document.getElementById('ishibaThinking').classList.remove('active');
+    document.getElementById('strickThinking').classList.remove('active');
+    document.getElementById('errorMsg').style.display = 'block';
+    console.error(e);
+  }
+
+  btn.disabled = false;
+}
+
+document.getElementById('questionInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    startFight();
+  }
+});
+</script>
+</body>
+</html>
